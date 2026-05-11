@@ -9,6 +9,11 @@ import './App.css';
 const Icon = {
   wallet: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>,
   plus: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+  dashboard: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>,
+  transactions: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>,
+  cards: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>,
+  settings: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1V11a2 2 0 0 1-2-2 2 2 0 0 1 2-2v.09A1.65 1.65 0 0 0 5 4.6a1.65 1.65 0 0 0 .33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>,
+  menu: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>,
 };
 
 const Settings = () => (
@@ -27,6 +32,7 @@ const Settings = () => (
 
 export default function App() {
   const [toast, setToast] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type });
@@ -35,29 +41,63 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen">
-        {/* ── Navbar ─── */}
-        <nav className="navbar">
-          <div className="container">
-            <Link to="/" className="navbar-brand">
+      <div className="app-layout">
+        {/* ── Sidebar ─── */}
+        <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+          <div className="sidebar-header">
+            <Link to="/" className="navbar-brand" onClick={() => setSidebarOpen(false)}>
               <div className="logo-icon">{Icon.wallet}</div>
               <h1>Vortex<span>Bank</span></h1>
             </Link>
-            <div className="navbar-links">
-              <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} end>Dashboard</NavLink>
-              <NavLink to="/transactions" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Transactions</NavLink>
-              <NavLink to="/cards" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Cards</NavLink>
-              <NavLink to="/settings" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Settings</NavLink>
-            </div>
-            <div className="navbar-actions">
+          </div>
+          
+          <nav className="sidebar-nav">
+            <NavLink to="/" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} end onClick={() => setSidebarOpen(false)}>
+              {Icon.dashboard} Dashboard
+            </NavLink>
+            <NavLink to="/transactions" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setSidebarOpen(false)}>
+              {Icon.transactions} Transactions
+            </NavLink>
+            <NavLink to="/cards" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setSidebarOpen(false)}>
+              {Icon.cards} Cards
+            </NavLink>
+            <NavLink to="/settings" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setSidebarOpen(false)}>
+              {Icon.settings} Settings
+            </NavLink>
+          </nav>
+
+          <div className="sidebar-footer">
+            <div className="user-profile">
               <div className="avatar">VB</div>
+              <div className="user-info">
+                <h4>Vortex User</h4>
+                <p>Premium Member</p>
+              </div>
             </div>
           </div>
-        </nav>
+        </aside>
 
-        {/* ── Main ─── */}
-        <main className="dashboard">
-          <div className="container">
+        {/* ── Mobile Navbar ─── */}
+        <nav className="navbar md-only" style={{ display: 'none' }}>
+           <div className="container">
+              <button className="btn btn-ghost p-2" onClick={() => setSidebarOpen(!sidebarOpen)}>
+                {Icon.menu}
+              </button>
+              <div className="navbar-brand">
+                <h1>Vortex<span>Bank</span></h1>
+              </div>
+              <div className="avatar">VB</div>
+           </div>
+        </nav>
+        <style dangerouslySetInnerHTML={{__html: `
+          @media (max-width: 1024px) {
+            .navbar.md-only { display: flex !important; }
+          }
+        `}} />
+
+        {/* ── Main Content ─── */}
+        <main className="main-content">
+          <div className="container" style={{ paddingTop: '2.5rem' }}>
             <Routes>
               <Route path="/" element={<Dashboard showToast={showToast} />} />
               <Route path="/transactions" element={<Transactions />} />
