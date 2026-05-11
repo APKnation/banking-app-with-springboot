@@ -46,7 +46,7 @@ const Dashboard = ({ showToast, refreshTrigger, onOpenAddAccount }) => {
       else                         await api.withdraw(id, amount);
       setModalOpen(false);
       fetchAccounts();
-      showToast(`${modalType === 'deposit' ? 'Deposit' : 'Withdrawal'} of $${amount.toFixed(2)} successful!`);
+      showToast(`${modalType === 'deposit' ? 'Deposit' : 'Withdrawal'} of Tsh ${amount.toLocaleString()} successful!`);
     } catch (err) {
       showToast(err.response?.data?.message || 'Transaction failed.', 'error');
     }
@@ -107,7 +107,7 @@ const Dashboard = ({ showToast, refreshTrigger, onOpenAddAccount }) => {
             <div className="glass-card empty-state anim-fade-up">
               <div className="empty-icon">{Icon.bank}</div>
               <h3>No Accounts Yet</h3>
-              <p>Open your first account from the sidebar to get started with WEKEZA Bank.</p>
+              <p>Open your first account from the sidebar to get started with WekezaBank.</p>
             </div>
           ) : (
             accounts.map((acc, i) => (

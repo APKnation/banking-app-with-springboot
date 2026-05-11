@@ -64,7 +64,7 @@ export default function App() {
           <div className="sidebar-header">
             <Link to="/" className="navbar-brand" onClick={() => setSidebarOpen(false)}>
               <div className="logo-icon">{Icon.wallet}</div>
-              <h1>WEKEZA<span>Bank</span></h1>
+              <h1>Wekeza<span>Bank</span></h1>
             </Link>
           </div>
           
@@ -107,7 +107,7 @@ export default function App() {
                 {Icon.menu}
               </button>
               <div className="navbar-brand">
-                <h1>WEKEZA<span>Bank</span></h1>
+                <h1>Wekeza<span>Bank</span></h1>
               </div>
               <div className="avatar">WK</div>
            </div>
