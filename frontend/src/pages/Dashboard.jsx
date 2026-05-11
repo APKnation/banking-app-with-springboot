@@ -3,26 +3,22 @@ import AccountCard from '../components/AccountCard';
 import TransactionModal from '../components/TransactionModal';
 import * as api from '../services/api';
 
-const Dashboard = ({ showToast }) => {
+const Dashboard = ({ showToast, refreshTrigger, onOpenAddAccount }) => {
   const [accounts, setAccounts]           = useState([]);
   const [loading, setLoading]             = useState(true);
   const [modalOpen, setModalOpen]         = useState(false);
   const [modalType, setModalType]         = useState('deposit');
   const [selectedAccount, setSelectedAccount] = useState(null);
-  const [addOpen, setAddOpen]             = useState(false);
-  const [newName, setNewName]             = useState('');
 
   const Icon = {
     plus: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
-    user: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
     total: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
     accounts: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
     trend: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
     bank: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>,
-    close: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
   };
 
-  useEffect(() => { fetchAccounts(); }, []);
+  useEffect(() => { fetchAccounts(); }, [refreshTrigger]);
 
   const fetchAccounts = async () => {
     try {
@@ -33,16 +29,6 @@ const Dashboard = ({ showToast }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleCreate = async (e) => {
-    e.preventDefault();
-    try {
-      await api.createAccount({ accountOwnerName: newName, balance: 0 });
-      setNewName(''); setAddOpen(false);
-      fetchAccounts();
-      showToast('Account created successfully!');
-    } catch { showToast('Failed to create account.', 'error'); }
   };
 
   const handleDelete = async (id) => {
@@ -110,7 +96,7 @@ const Dashboard = ({ showToast }) => {
           <h2>{Icon.bank}&nbsp; Your Accounts</h2>
           <p>{accounts.length} account{accounts.length !== 1 ? 's' : ''} registered</p>
         </div>
-        <button className="btn btn-primary btn-sm" onClick={() => setAddOpen(true)}>
+        <button className="btn btn-primary btn-sm" onClick={onOpenAddAccount}>
           {Icon.plus} Open Account
         </button>
       </div>
@@ -124,8 +110,8 @@ const Dashboard = ({ showToast }) => {
             <div className="glass-card empty-state anim-fade-up">
               <div className="empty-icon">{Icon.bank}</div>
               <h3>No Accounts Yet</h3>
-              <p>Open your first account to get started with VortexBank.</p>
-              <button className="btn btn-primary" style={{ marginTop: '1.25rem' }} onClick={() => setAddOpen(true)}>
+              <p>Open your first account to get started with WEKEZA Bank.</p>
+              <button className="btn btn-primary" style={{ marginTop: '1.25rem' }} onClick={onOpenAddAccount}>
                 {Icon.plus} Open New Account
               </button>
             </div>
@@ -141,43 +127,6 @@ const Dashboard = ({ showToast }) => {
               />
             ))
           )}
-        </div>
-      )}
-
-      {/* Create Account Modal */}
-      {addOpen && (
-        <div className="overlay">
-          <div className="modal">
-            <button className="modal-close" onClick={() => setAddOpen(false)}>{Icon.close}</button>
-            <div className="modal-icon deposit">{Icon.bank}</div>
-            <h2>Open New Account</h2>
-            <p className="modal-sub">Fill in the details to create a new bank account.</p>
-            <form onSubmit={handleCreate}>
-              <div className="form-group">
-                <label className="label">Account Owner Name</label>
-                <div className="input-icon-wrap">
-                  <span className="icon-prefix">{Icon.user}</span>
-                  <input
-                    type="text"
-                    className="input"
-                    placeholder="Enter full name"
-                    value={newName}
-                    onChange={(e) => setNewName(e.target.value)}
-                    required
-                    autoFocus
-                  />
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.85rem' }}>
-                  {Icon.plus} Create Account
-                </button>
-                <button type="button" className="btn btn-ghost" style={{ width: '100%' }} onClick={() => setAddOpen(false)}>
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
         </div>
       )}
 

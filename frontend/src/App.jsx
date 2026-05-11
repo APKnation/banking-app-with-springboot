@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, NavLink, Link } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Transactions from './pages/Transactions';
 import Cards from './pages/Cards';
+import * as api from './services/api';
 import './App.css';
 
 /* ── SVG Icons ─────────────────────────────────────────── */
@@ -14,6 +15,9 @@ const Icon = {
   cards: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>,
   settings: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1V11a2 2 0 0 1-2-2 2 2 0 0 1 2-2v.09A1.65 1.65 0 0 0 5 4.6a1.65 1.65 0 0 0 .33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>,
   menu: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>,
+  user: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+  bank: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>,
+  close: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>,
 };
 
 const Settings = () => (
@@ -33,10 +37,23 @@ const Settings = () => (
 export default function App() {
   const [toast, setToast] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 3500);
+  };
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    try {
+      await api.createAccount({ accountOwnerName: newName, balance: 0 });
+      setNewName(''); setAddOpen(false);
+      setRefreshTrigger(prev => prev + 1);
+      showToast('Account created successfully!');
+    } catch { showToast('Failed to create account.', 'error'); }
   };
 
   return (
@@ -47,7 +64,7 @@ export default function App() {
           <div className="sidebar-header">
             <Link to="/" className="navbar-brand" onClick={() => setSidebarOpen(false)}>
               <div className="logo-icon">{Icon.wallet}</div>
-              <h1>Vortex<span>Bank</span></h1>
+              <h1>WEKEZA<span>Bank</span></h1>
             </Link>
           </div>
           
@@ -64,13 +81,23 @@ export default function App() {
             <NavLink to="/settings" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setSidebarOpen(false)}>
               {Icon.settings} Settings
             </NavLink>
+
+            <div style={{ marginTop: '2rem', padding: '0 0.5rem' }}>
+              <button 
+                className="btn btn-primary w-full" 
+                style={{ padding: '1rem', borderRadius: 'var(--radius-sm)' }}
+                onClick={() => { setAddOpen(true); setSidebarOpen(false); }}
+              >
+                {Icon.plus} Open Account
+              </button>
+            </div>
           </nav>
 
           <div className="sidebar-footer">
             <div className="user-profile">
-              <div className="avatar">VB</div>
+              <div className="avatar">WK</div>
               <div className="user-info">
-                <h4>Vortex User</h4>
+                <h4>Wekeza User</h4>
                 <p>Premium Member</p>
               </div>
             </div>
@@ -84,9 +111,9 @@ export default function App() {
                 {Icon.menu}
               </button>
               <div className="navbar-brand">
-                <h1>Vortex<span>Bank</span></h1>
+                <h1>WEKEZA<span>Bank</span></h1>
               </div>
-              <div className="avatar">VB</div>
+              <div className="avatar">WK</div>
            </div>
         </nav>
         <style dangerouslySetInnerHTML={{__html: `
@@ -99,13 +126,50 @@ export default function App() {
         <main className="main-content">
           <div className="container" style={{ paddingTop: '2.5rem' }}>
             <Routes>
-              <Route path="/" element={<Dashboard showToast={showToast} />} />
+              <Route path="/" element={<Dashboard showToast={showToast} refreshTrigger={refreshTrigger} />} />
               <Route path="/transactions" element={<Transactions />} />
               <Route path="/cards" element={<Cards />} />
               <Route path="/settings" element={<Settings />} />
             </Routes>
           </div>
         </main>
+
+        {/* ── Create Account Modal ─── */}
+        {addOpen && (
+          <div className="overlay">
+            <div className="modal">
+              <button className="modal-close" onClick={() => setAddOpen(false)}>{Icon.close}</button>
+              <div className="modal-icon deposit">{Icon.bank}</div>
+              <h2>Open New Account</h2>
+              <p className="modal-sub">Fill in the details to create a new bank account.</p>
+              <form onSubmit={handleCreate}>
+                <div className="form-group">
+                  <label className="label">Account Owner Name</label>
+                  <div className="input-icon-wrap">
+                    <span className="icon-prefix">{Icon.user}</span>
+                    <input
+                      type="text"
+                      className="input"
+                      placeholder="Enter full name"
+                      value={newName}
+                      onChange={(e) => setNewName(e.target.value)}
+                      required
+                      autoFocus
+                    />
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.85rem' }}>
+                    {Icon.plus} Create Account
+                  </button>
+                  <button type="button" className="btn btn-ghost" style={{ width: '100%' }} onClick={() => setAddOpen(false)}>
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
         {/* ── Toast ─── */}
         {toast && (

@@ -2,15 +2,21 @@ package apk.banking.services;
 
 import apk.banking.model.Account;
 import apk.banking.repository.AccountRepository;
+import apk.banking.model.Transaction;
+import apk.banking.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 
 import java.util.List;
 
 @Service
 public class AccountServiceImp  implements AccountService {
    private final AccountRepository accountRepository;
-   public AccountServiceImp(AccountRepository accountRepository) {
+   private final TransactionRepository transactionRepository;
+
+   public AccountServiceImp(AccountRepository accountRepository, TransactionRepository transactionRepository) {
         this.accountRepository = accountRepository;
+        this.transactionRepository = transactionRepository;
    }
 
      //create method
@@ -52,8 +58,10 @@ public class AccountServiceImp  implements AccountService {
         Account account = getAccountById(id);
 
         account.setBalance(account.getBalance() + amount);
+        
+        transactionRepository.save(new Transaction(null, id, account.getAccountOwnerName(), "DEPOSIT", amount, LocalDateTime.now()));
 
-    return accountRepository.save(account);
+        return accountRepository.save(account);
     }
 
     @Override
@@ -67,6 +75,8 @@ public class AccountServiceImp  implements AccountService {
         }
 
         account.setBalance(account.getBalance() - amount);
+        
+        transactionRepository.save(new Transaction(null, id, account.getAccountOwnerName(), "WITHDRAW", amount, LocalDateTime.now()));
 
         return accountRepository.save(account);
     }
