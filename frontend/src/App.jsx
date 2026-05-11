@@ -59,6 +59,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className="app-layout">
+        {/* ── Mobile Overlay ─── */}
+        {sidebarOpen && <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />}
+
         {/* ── Sidebar ─── */}
         <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
           <div className="sidebar-header">

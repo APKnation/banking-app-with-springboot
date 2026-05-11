@@ -664,3 +664,59 @@ a      { text-decoration: none; color: inherit; }
 .sidebar-action svg {
   color: var(--primary-light);
 }
+
+/* ─── Global Responsiveness ──────────────────────────── */
+
+@media (max-width: 1200px) {
+  .accounts-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 992px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .accounts-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .container { padding: 0 1rem; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .accounts-grid { grid-template-columns: 1fr; }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .stat-value { font-size: 1.75rem; }
+  .account-balance { font-size: 1.8rem; }
+  
+  .modal {
+    padding: 1.5rem;
+    max-width: 95%;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-brand h1 { font-size: 1.1rem; }
+  .stat-card { padding: 1.25rem; }
+  .account-card { padding: 1.25rem; }
+  
+  .table-container {
+    margin: 0 -1rem;
+    width: calc(100% + 2rem);
+  }
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 95;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
