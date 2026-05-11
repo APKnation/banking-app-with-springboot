@@ -125,8 +125,12 @@ const Transactions = () => {
           border-bottom: none;
         }
 
+        .transaction-table tr:nth-child(even) {
+          background: rgba(255, 255, 255, 0.02);
+        }
+
         .transaction-table tr:hover {
-          background: rgba(255, 255, 255, 0.015);
+          background: rgba(255, 255, 255, 0.04) !important;
         }
 
         .date-cell {
