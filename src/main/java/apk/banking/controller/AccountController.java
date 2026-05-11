@@ -1,8 +1,10 @@
 package apk.banking.controller;
 
+import apk.banking.dto.DepositRequest;
 import apk.banking.model.Account;
 import apk.banking.repository.AccountRepository;
 import apk.banking.services.AccountService;
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +39,13 @@ public class AccountController {
     @PutMapping("/{id}")
     public ResponseEntity<Account> updateAccount(@RequestBody Account account) {
         Account updatedAccount = accountService.updateAccount(account);
-        return ResponseEntity.ok(updatedAccount);
+        return ResponseEntity.ok(updatedAccount);}
+    @PutMapping("/{id}/deposit")
+    public ResponseEntity<Account> deposit(
+            @PathVariable Long id,
+            @RequestBody DepositRequest request) {
+
+        Account account = accountService.deposit(id, request.getAmount());
+        return ResponseEntity.ok(account);
     }
 }

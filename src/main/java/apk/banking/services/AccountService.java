@@ -7,6 +7,7 @@ public interface AccountService {
 
     Account createAccount(Account account);
 
+
     Account updateAccount(Account account);
 
     void deleteAccountById(Long id);
@@ -14,6 +15,6 @@ public interface AccountService {
     Account getAccountById(Long id);
 
     List<Account> getAllAccount();
-    Account deposit(Account account, double amount);
-    Account withdraw(Account account,Long id, double amount);
+    Account deposit(Long id, double amount);
+    Account withdraw(Long id, double amount);
 }
