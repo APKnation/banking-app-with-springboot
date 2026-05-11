@@ -23,6 +23,6 @@ public class Account {
     private String cardNumber;
     private String accountOwnerName;
     private String accountType; // SAVINGS, CURRENT
-    private double balance;
+    private Double balance;
     private LocalDateTime createdAt;
 }

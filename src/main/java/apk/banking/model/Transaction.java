@@ -19,7 +19,7 @@ public class Transaction {
     private Long accountId;
     private String accountOwnerName;
     private String type; 
-    private double amount;
-    private double balanceAfterTransaction;
+    private Double amount;
+    private Double balanceAfterTransaction;
     private LocalDateTime timestamp;
 }

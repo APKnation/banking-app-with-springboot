@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class TransferRequest {
     private Long toAccountId;
-    private double amount;
+    private Double amount;
 }

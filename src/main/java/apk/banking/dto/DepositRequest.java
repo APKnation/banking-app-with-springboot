@@ -1,7 +1,7 @@
 package apk.banking.dto;
 
 public class DepositRequest {
-    private double amount;
+    private Double amount;
 
     public DepositRequest() {}
 

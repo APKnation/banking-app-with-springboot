@@ -17,12 +17,12 @@ public class Loan {
 
     private Long accountId;
     private String accountOwnerName;
-    private double principalAmount;
-    private double interestRate; // e.g. 0.05 for 5%
+    private Double principalAmount;
+    private Double interestRate; // e.g. 0.05 for 5%
     private int durationMonths;
-    private double totalRepayable;
-    private double monthlyInstallment;
-    private double remainingBalance;
+    private Double totalRepayable;
+    private Double monthlyInstallment;
+    private Double remainingBalance;
     
     private String status; // PENDING, APPROVED, REJECTED, CLOSED
     private LocalDateTime appliedAt;
