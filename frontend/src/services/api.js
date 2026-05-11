@@ -14,6 +14,7 @@ export const updateAccount = (id, account) => api.put(`/account/${id}`, account)
 export const deleteAccount = (id) => api.delete(`/account/${id}`);
 export const deposit = (id, amount) => api.put(`/account/${id}/deposit`, { amount });
 export const withdraw = (id, amount) => api.put(`/account/${id}/withdraw`, { amount });
+export const transfer = (fromId, toId, amount) => api.put(`/account/${fromId}/transfer`, { toAccountId: toId, amount });
 
 // Transactions
 export const getTransactions = () => api.get('/transactions');

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import AccountCard from '../components/AccountCard';
 import TransactionModal from '../components/TransactionModal';
+import TransferModal from '../components/TransferModal';
 import * as api from '../services/api';
 
 const Dashboard = ({ showToast, refreshTrigger, onOpenAddAccount }) => {
   const [accounts, setAccounts]           = useState([]);
   const [loading, setLoading]             = useState(true);
   const [modalOpen, setModalOpen]         = useState(false);
+  const [transferModalOpen, setTransferModalOpen] = useState(false);
   const [modalType, setModalType]         = useState('deposit');
   const [selectedAccount, setSelectedAccount] = useState(null);
 
@@ -49,6 +51,17 @@ const Dashboard = ({ showToast, refreshTrigger, onOpenAddAccount }) => {
       showToast(`${modalType === 'deposit' ? 'Deposit' : 'Withdrawal'} of Tsh ${amount.toLocaleString()} successful!`);
     } catch (err) {
       showToast(err.response?.data?.message || 'Transaction failed.', 'error');
+    }
+  };
+
+  const handleTransfer = async (fromId, toId, amount) => {
+    try {
+      await api.transfer(fromId, toId, amount);
+      setTransferModalOpen(false);
+      fetchAccounts();
+      showToast(`Transfer of Tsh ${amount.toLocaleString()} successful!`);
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Transfer failed.', 'error');
     }
   };
 
@@ -117,6 +130,7 @@ const Dashboard = ({ showToast, refreshTrigger, onOpenAddAccount }) => {
                 animDelay={Math.min(i + 1, 5)}
                 onDeposit={(a) => openModal('deposit', a)}
                 onWithdraw={(a) => openModal('withdraw', a)}
+                onTransfer={(a) => { setSelectedAccount(a); setTransferModalOpen(true); }}
                 onDelete={handleDelete}
               />
             ))
@@ -130,6 +144,13 @@ const Dashboard = ({ showToast, refreshTrigger, onOpenAddAccount }) => {
         onSubmit={handleTransaction}
         type={modalType}
         account={selectedAccount}
+      />
+
+      <TransferModal
+        isOpen={transferModalOpen}
+        onClose={() => setTransferModalOpen(false)}
+        onSubmit={handleTransfer}
+        sourceAccount={selectedAccount}
       />
     </div>
   );

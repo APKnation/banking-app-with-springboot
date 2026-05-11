@@ -62,4 +62,12 @@ public class AccountController {
         Account account = accountService.withdraw(id, request.getAmount());
         return ResponseEntity.ok(account);
     }
+
+    @PutMapping("/{id}/transfer")
+    public ResponseEntity<Void> transfer(
+            @PathVariable Long id,
+            @RequestBody apk.banking.dto.TransferRequest request) {
+        accountService.transfer(id, request.getToAccountId(), request.getAmount());
+        return ResponseEntity.ok().build();
+    }
 }

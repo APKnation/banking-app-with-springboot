@@ -80,4 +80,26 @@ public class AccountServiceImp  implements AccountService {
 
         return accountRepository.save(account);
     }
+
+    @Override
+    public void transfer(Long fromId, Long toId, double amount) {
+        Account fromAccount = accountRepository.findById(fromId)
+                .orElseThrow(() -> new RuntimeException("Source account not found"));
+        Account toAccount = accountRepository.findById(toId)
+                .orElseThrow(() -> new RuntimeException("Destination account not found"));
+
+        if (fromAccount.getBalance() < amount) {
+            throw new RuntimeException("Insufficient balance for transfer");
+        }
+
+        // Deduct from source
+        fromAccount.setBalance(fromAccount.getBalance() - amount);
+        accountRepository.save(fromAccount);
+        transactionRepository.save(new Transaction(null, fromId, fromAccount.getAccountOwnerName(), "TRANSFER_OUT", amount, LocalDateTime.now()));
+
+        // Add to destination
+        toAccount.setBalance(toAccount.getBalance() + amount);
+        accountRepository.save(toAccount);
+        transactionRepository.save(new Transaction(null, toId, toAccount.getAccountOwnerName(), "TRANSFER_IN", amount, LocalDateTime.now()));
+    }
 }

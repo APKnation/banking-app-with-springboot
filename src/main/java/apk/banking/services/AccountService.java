@@ -17,4 +17,5 @@ public interface AccountService {
     List<Account> getAllAccount();
     Account deposit(Long id, double amount);
     Account withdraw(Long id, double amount);
+    void transfer(Long fromId, Long toId, double amount);
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const AccountCard = ({ account, onDeposit, onWithdraw, onDelete, animDelay }) => {
+const AccountCard = ({ account, onDeposit, onWithdraw, onTransfer, onDelete, animDelay }) => {
   return (
     <div className={`glass-card account-card anim-fade-up anim-delay-${animDelay || 1}`}>
       {/* Header */}
@@ -14,11 +14,9 @@ const AccountCard = ({ account, onDeposit, onWithdraw, onDelete, animDelay }) =>
         <span className="account-id">#{String(account.id).padStart(6, '0')}</span>
       </div>
 
-      {/* Owner */}
       <p className="account-owner">Account Holder</p>
       <h3 className="account-name">{account.accountOwnerName}</h3>
 
-      {/* Balance */}
       <p className="account-balance-label">Available Balance</p>
       <div className="account-balance">
         Tsh {account.balance.toLocaleString()}
@@ -28,19 +26,23 @@ const AccountCard = ({ account, onDeposit, onWithdraw, onDelete, animDelay }) =>
       <div className="account-divider" />
 
       {/* Actions */}
-      <div className="account-actions">
-        <button className="btn btn-teal btn-sm" onClick={() => onDeposit(account)}>
+      <div className="account-actions" style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
+        <button className="btn btn-teal btn-sm" onClick={() => onDeposit(account)} title="Deposit">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
-          Deposit
         </button>
-        <button className="btn btn-purple btn-sm" onClick={() => onWithdraw(account)}>
+        <button className="btn btn-purple btn-sm" onClick={() => onWithdraw(account)} title="Withdraw">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
-          Withdraw
+        </button>
+        <button className="btn btn-primary btn-sm" onClick={() => onTransfer(account)} title="Transfer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="17 11 21 7 17 3"></polyline>
+            <path d="M21 7H9a5 5 0 0 0-5 5v3"></path>
+          </svg>
         </button>
       </div>
 
