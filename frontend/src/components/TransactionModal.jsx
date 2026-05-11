@@ -58,18 +58,17 @@ const TransactionModal = ({ isOpen, onClose, onSubmit, type, account }) => {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="label">Amount (USD)</label>
+            <label className="label">Amount (TSH)</label>
             <div className="input-icon-wrap">
-              <span className="icon-prefix">{icons.dollar}</span>
+              <span className="icon-prefix" style={{ fontSize: '0.75rem', fontWeight: 800 }}>TSH</span>
               <input
                 type="number"
                 className="input"
-                placeholder="0.00"
+                placeholder="0"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 required
-                step="0.01"
-                min="0.01"
+                min="1"
                 autoFocus
               />
             </div>
