@@ -16,6 +16,11 @@ const AccountCard = ({ account, onDeposit, onWithdraw, onTransfer, onDelete, ani
 
       <p className="account-owner">Account Holder</p>
       <h3 className="account-name">{account.accountOwnerName}</h3>
+      {account.cardNumber && (
+        <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '-1rem', marginBottom: '1rem', letterSpacing: '0.1em' }}>
+          CARD: **** **** **** {account.cardNumber.slice(-4)}
+        </p>
+      )}
 
       <p className="account-balance-label">Available Balance</p>
       <div className="account-balance">

@@ -20,6 +20,7 @@ public class Account {
     private Long id;
 
     private String accountNumber;
+    private String cardNumber;
     private String accountOwnerName;
     private String accountType; // SAVINGS, CURRENT
     private double balance;

@@ -23,6 +23,14 @@ public class AccountServiceImp implements AccountService {
     public Account createAccount(Account account) {
         // Generate a simple unique account number
         account.setAccountNumber("ACC-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        
+        // Generate a 16-digit card number
+        StringBuilder card = new StringBuilder("4"); // Start with 4 for Visa-style
+        for (int i = 0; i < 15; i++) {
+            card.append((int) (Math.random() * 10));
+        }
+        account.setCardNumber(card.toString());
+        
         account.setCreatedAt(LocalDateTime.now());
         if (account.getAccountType() == null) account.setAccountType("SAVINGS");
         return accountRepository.save(account);
