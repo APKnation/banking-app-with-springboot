@@ -11,7 +11,7 @@ const AccountCard = ({ account, onDeposit, onWithdraw, onTransfer, onDelete, ani
             <line x1="1" y1="10" x2="23" y2="10"></line>
           </svg>
         </div>
-        <span className="account-id">#{String(account.id).padStart(6, '0')}</span>
+        <span className="account-id">{account.accountNumber || `ID: ${account.id}`}</span>
       </div>
 
       <p className="account-owner">Account Holder</p>

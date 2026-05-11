@@ -18,7 +18,8 @@ public class Transaction {
 
     private Long accountId;
     private String accountOwnerName;
-    private String type; // DEPOSIT or WITHDRAW
+    private String type; 
     private double amount;
+    private double balanceAfterTransaction;
     private LocalDateTime timestamp;
 }

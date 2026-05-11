@@ -59,7 +59,7 @@ public class LoanServiceImp implements LoanService {
         accountRepository.save(account);
         
         // Record transaction
-        transactionRepository.save(new Transaction(null, account.getId(), account.getAccountOwnerName(), "LOAN_DISBURSEMENT", loan.getPrincipalAmount(), LocalDateTime.now()));
+        transactionRepository.save(new Transaction(null, account.getId(), account.getAccountOwnerName(), "LOAN_DISBURSEMENT", loan.getPrincipalAmount(), account.getBalance(), LocalDateTime.now()));
         
         loan.setStatus("APPROVED");
         loan.setUpdatedAt(LocalDateTime.now());
@@ -96,7 +96,7 @@ public class LoanServiceImp implements LoanService {
         accountRepository.save(account);
         
         // Record transaction
-        transactionRepository.save(new Transaction(null, account.getId(), account.getAccountOwnerName(), "LOAN_REPAYMENT", amount, LocalDateTime.now()));
+        transactionRepository.save(new Transaction(null, account.getId(), account.getAccountOwnerName(), "LOAN_REPAYMENT", amount, account.getBalance(), LocalDateTime.now()));
         
         // Update loan
         loan.setRemainingBalance(Math.max(0, loan.getRemainingBalance() - amount));
