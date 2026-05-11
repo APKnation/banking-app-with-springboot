@@ -81,8 +81,7 @@ export default function App() {
 
             <div style={{ marginTop: '2rem', padding: '0 0.5rem' }}>
               <button 
-                className="btn btn-primary w-full" 
-                style={{ padding: '1rem', borderRadius: 'var(--radius-sm)' }}
+                className="sidebar-action" 
                 onClick={() => { setAddOpen(true); setSidebarOpen(false); }}
               >
                 {Icon.plus} Open Account
