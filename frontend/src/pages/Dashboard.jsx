@@ -96,9 +96,6 @@ const Dashboard = ({ showToast, refreshTrigger, onOpenAddAccount }) => {
           <h2>{Icon.bank}&nbsp; Your Accounts</h2>
           <p>{accounts.length} account{accounts.length !== 1 ? 's' : ''} registered</p>
         </div>
-        <button className="btn btn-primary btn-sm" onClick={onOpenAddAccount}>
-          {Icon.plus} Open Account
-        </button>
       </div>
 
       {/* Accounts grid */}
@@ -110,10 +107,7 @@ const Dashboard = ({ showToast, refreshTrigger, onOpenAddAccount }) => {
             <div className="glass-card empty-state anim-fade-up">
               <div className="empty-icon">{Icon.bank}</div>
               <h3>No Accounts Yet</h3>
-              <p>Open your first account to get started with WEKEZA Bank.</p>
-              <button className="btn btn-primary" style={{ marginTop: '1.25rem' }} onClick={onOpenAddAccount}>
-                {Icon.plus} Open New Account
-              </button>
+              <p>Open your first account from the sidebar to get started with WEKEZA Bank.</p>
             </div>
           ) : (
             accounts.map((acc, i) => (

@@ -78,9 +78,6 @@ export default function App() {
             <NavLink to="/cards" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setSidebarOpen(false)}>
               {Icon.cards} Cards
             </NavLink>
-            <NavLink to="/settings" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setSidebarOpen(false)}>
-              {Icon.settings} Settings
-            </NavLink>
 
             <div style={{ marginTop: '2rem', padding: '0 0.5rem' }}>
               <button 
@@ -129,7 +126,6 @@ export default function App() {
               <Route path="/" element={<Dashboard showToast={showToast} refreshTrigger={refreshTrigger} />} />
               <Route path="/transactions" element={<Transactions />} />
               <Route path="/cards" element={<Cards />} />
-              <Route path="/settings" element={<Settings />} />
             </Routes>
           </div>
         </main>
