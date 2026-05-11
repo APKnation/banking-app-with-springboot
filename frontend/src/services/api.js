@@ -19,4 +19,12 @@ export const transfer = (fromId, toId, amount) => api.put(`/account/${fromId}/tr
 // Transactions
 export const getTransactions = () => api.get('/transactions');
 
+// Loans
+export const getLoans = () => api.get('/loans');
+export const getAccountLoans = (accountId) => api.get(`/loans/account/${accountId}`);
+export const applyLoan = (loanData) => api.post('/loans/apply', loanData);
+export const approveLoan = (id) => api.put(`/loans/${id}/approve`);
+export const rejectLoan = (id) => api.put(`/loans/${id}/reject`);
+export const repayLoan = (id, amount) => api.put(`/loans/${id}/repay`, { amount });
+
 export default api;
