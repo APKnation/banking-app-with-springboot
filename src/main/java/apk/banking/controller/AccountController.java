@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/account")
 public class AccountController {
@@ -39,7 +40,13 @@ public class AccountController {
     @PutMapping("/{id}")
     public ResponseEntity<Account> updateAccount(@RequestBody Account account) {
         Account updatedAccount = accountService.updateAccount(account);
-        return ResponseEntity.ok(updatedAccount);}
+        return ResponseEntity.ok(updatedAccount);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
+        accountService.deleteAccountById(id);
+        return ResponseEntity.noContent().build();
+    }
 
     @PutMapping("/{id}/deposit")
     public ResponseEntity<Account> deposit(
@@ -50,15 +57,10 @@ public class AccountController {
         return ResponseEntity.ok(account);
     }
     @PutMapping("/{id}/withdraw")
-    public ResponseEntity<Account> withdraw(@PathVariable Long id,
-                                           @RequestBody DepositRequest request) {
+    public ResponseEntity<Account> withdraw(
+            @PathVariable Long id,
+            @RequestBody DepositRequest request) {
         Account account = accountService.withdraw(id, request.getAmount());
         return ResponseEntity.ok(account);
-    }
-    
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
-        accountService.deleteAccountById(id);
-        return ResponseEntity.noContent().build();
     }
 }
