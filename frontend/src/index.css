@@ -127,11 +127,18 @@ a      { text-decoration: none; color: inherit; }
 .btn-teal:hover { box-shadow: 0 0 24px rgba(20, 184, 166, 0.35); transform: translateY(-1px); }
 
 .btn-danger {
-  background: transparent;
-  color: var(--text-secondary);
-  border: 1px solid var(--border);
+  background: linear-gradient(135deg, var(--danger), #be123c);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(244, 63, 94, 0.3);
 }
-.btn-danger:hover { color: var(--danger); border-color: rgba(244, 63, 94, 0.4); background: rgba(244, 63, 94, 0.06); }
+.btn-danger:hover { box-shadow: 0 0 24px rgba(244, 63, 94, 0.35); transform: translateY(-1px); }
+
+.btn-purple {
+  background: linear-gradient(135deg, #a855f7, #7e22ce);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.3);
+}
+.btn-purple:hover { box-shadow: 0 0 24px rgba(168, 85, 247, 0.35); transform: translateY(-1px); }
 
 .btn-ghost {
   background: transparent;

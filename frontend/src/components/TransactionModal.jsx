@@ -75,7 +75,7 @@ const TransactionModal = ({ isOpen, onClose, onSubmit, type, account }) => {
           </div>
 
           <div className="modal-footer">
-            <button type="submit" className={`btn ${isDeposit ? 'btn-teal' : 'btn-primary'}`} style={{ width: '100%', padding: '0.85rem' }}>
+            <button type="submit" className={`btn ${isDeposit ? 'btn-teal' : 'btn-purple'}`} style={{ width: '100%', padding: '0.85rem' }}>
               {isDeposit ? icons.deposit : icons.withdraw}
               Confirm {isDeposit ? 'Deposit' : 'Withdrawal'}
             </button>
