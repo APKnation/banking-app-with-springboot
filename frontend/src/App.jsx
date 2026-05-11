@@ -79,14 +79,14 @@ export default function App() {
               {Icon.cards} Cards
             </NavLink>
 
-            <div style={{ marginTop: '2rem', padding: '0 0.5rem' }}>
-              <button 
-                className="sidebar-action" 
-                onClick={() => { setAddOpen(true); setSidebarOpen(false); }}
-              >
-                {Icon.plus} Open Account
-              </button>
-            </div>
+            <button 
+              className="sidebar-link" 
+              style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', marginTop: '0.5rem' }}
+              onClick={() => { setAddOpen(true); setSidebarOpen(false); }}
+            >
+              <span style={{ color: 'var(--primary-light)', display: 'flex', alignItems: 'center' }}>{Icon.plus}</span> 
+              Open Account
+            </button>
           </nav>
 
           <div className="sidebar-footer">
