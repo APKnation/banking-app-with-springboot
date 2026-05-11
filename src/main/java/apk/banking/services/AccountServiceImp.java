@@ -53,9 +53,7 @@ public class AccountServiceImp  implements AccountService {
 
         account.setBalance(account.getBalance() + amount);
 
-        Account savedAccount = accountRepository.save(account);
-
-        return savedAccount;
+    return accountRepository.save(account);
     }
 
     @Override
