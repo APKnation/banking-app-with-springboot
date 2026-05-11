@@ -60,11 +60,11 @@ const Transactions = () => {
           <table className="transaction-table">
             <thead>
               <tr>
-                <th>TRANSACTION DATE</th>
-                <th>ACCOUNT OWNER</th>
-                <th>TYPE</th>
-                <th className="text-right">AMOUNT</th>
-                <th className="text-right">STATUS</th>
+                <th className="text-left">Date & Time</th>
+                <th className="text-left">Account Owner</th>
+                <th className="text-left">Type</th>
+                <th className="text-right">Amount</th>
+                <th className="text-right">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -105,18 +105,18 @@ const Transactions = () => {
         }
 
         .transaction-table th {
-          text-align: left;
-          padding: 1.25rem 1.5rem;
+          padding: 1rem 1.5rem;
           background: rgba(255, 255, 255, 0.02);
           border-bottom: 1px solid var(--border);
           color: var(--text-muted);
-          font-size: 0.75rem;
+          font-size: 0.7rem;
           font-weight: 700;
-          letter-spacing: 0.05em;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
         }
 
         .transaction-table td {
-          padding: 1.25rem 1.5rem;
+          padding: 1rem 1.5rem;
           border-bottom: 1px solid rgba(255, 255, 255, 0.05);
           vertical-align: middle;
         }
@@ -180,6 +180,7 @@ const Transactions = () => {
         }
 
         .text-right { text-align: right; }
+        .text-left { text-align: left; }
       `}} />
     </div>
   );
