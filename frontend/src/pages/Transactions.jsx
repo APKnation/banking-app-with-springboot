@@ -79,7 +79,7 @@ const Transactions = () => {
                     </span>
                   </td>
                   <td className={`amount-cell text-right ${tx.type === 'DEPOSIT' ? 'deposit-text' : 'withdraw-text'}`}>
-                    {tx.type === 'DEPOSIT' ? '+' : '-'}TSH {tx.amount.toLocaleString()}
+                    {tx.type === 'DEPOSIT' ? '+' : '-'}Tsh {tx.amount.toLocaleString()}
                   </td>
                   <td className="text-right">
                     <span className="status-pill">Completed</span>

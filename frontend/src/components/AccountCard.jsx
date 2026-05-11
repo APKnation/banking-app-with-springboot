@@ -21,7 +21,7 @@ const AccountCard = ({ account, onDeposit, onWithdraw, onDelete, animDelay }) =>
       {/* Balance */}
       <p className="account-balance-label">Available Balance</p>
       <div className="account-balance">
-        TSH {account.balance.toLocaleString()}
+        Tsh {account.balance.toLocaleString()}
         <span className="currency">TZS</span>
       </div>
 

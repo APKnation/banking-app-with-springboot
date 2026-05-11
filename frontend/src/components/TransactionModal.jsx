@@ -58,9 +58,9 @@ const TransactionModal = ({ isOpen, onClose, onSubmit, type, account }) => {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="label">Amount (TSH)</label>
+            <label className="label">Amount (Tsh)</label>
             <div className="input-icon-wrap">
-              <span className="icon-prefix" style={{ fontSize: '0.75rem', fontWeight: 800 }}>TSH</span>
+              <span className="icon-prefix" style={{ fontSize: '0.75rem', fontWeight: 800 }}>Tsh</span>
               <input
                 type="number"
                 className="input"

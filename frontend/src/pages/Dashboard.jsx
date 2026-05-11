@@ -66,7 +66,7 @@ const Dashboard = ({ showToast, refreshTrigger, onOpenAddAccount }) => {
           <div className="stat-icon icon-indigo">{Icon.total}</div>
           <p className="stat-label">Total Assets</p>
           <div className="stat-value">
-            TSH {totalBalance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+            Tsh {totalBalance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
           </div>
           <div className="stat-badge">
             <span className="badge badge-success">↑ Active</span>
@@ -84,7 +84,7 @@ const Dashboard = ({ showToast, refreshTrigger, onOpenAddAccount }) => {
           <div className="stat-icon icon-rose">{Icon.trend}</div>
           <p className="stat-label">Avg. Balance</p>
           <div className="stat-value">
-            TSH {accounts.length ? (totalBalance / accounts.length).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : '0'}
+            Tsh {accounts.length ? (totalBalance / accounts.length).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : '0'}
           </div>
           <p className="stat-sub">Per account</p>
         </div>
