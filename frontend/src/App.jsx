@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, NavLink, Link } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Transactions from './pages/Transactions';
 import Cards from './pages/Cards';
+import TransferModal from './components/TransferModal';
 import * as api from './services/api';
 import './App.css';
 
@@ -17,6 +18,7 @@ const Icon = {
   menu: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>,
   user: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
   bank: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>,
+  transfer: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="17 11 21 7 17 3"></polyline><path d="M21 7H9a5 5 0 0 0-5 5v3"></path><polyline points="7 13 3 17 7 21"></polyline><path d="M3 17h12a5 5 0 0 0 5-5V9"></path></svg>,
   close: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>,
 };
 
@@ -38,6 +40,8 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
+  const [transferOpen, setTransferOpen] = useState(false);
+  const [selectedSource, setSelectedSource] = useState(null);
   const [newName, setNewName] = useState('');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -54,6 +58,23 @@ export default function App() {
       setRefreshTrigger(prev => prev + 1);
       showToast('Account created successfully!');
     } catch { showToast('Failed to create account.', 'error'); }
+  };
+
+  const handleTransfer = async (fromId, toId, amount) => {
+    try {
+      await api.transfer(fromId, toId, amount);
+      setTransferOpen(false);
+      setRefreshTrigger(prev => prev + 1);
+      showToast(`Transfer of Tsh ${amount.toLocaleString()} successful!`);
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Transfer failed.', 'error');
+    }
+  };
+
+  const triggerTransfer = (source = null) => {
+    setSelectedSource(source);
+    setTransferOpen(true);
+    setSidebarOpen(false);
   };
 
   return (
@@ -90,6 +111,15 @@ export default function App() {
               <span style={{ color: 'var(--primary-light)', display: 'flex', alignItems: 'center' }}>{Icon.plus}</span> 
               Open Account
             </button>
+
+            <button 
+              className="sidebar-link" 
+              style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+              onClick={() => triggerTransfer(null)}
+            >
+              <span style={{ color: '#a855f7', display: 'flex', alignItems: 'center' }}>{Icon.transfer}</span> 
+              Transfer Funds
+            </button>
           </nav>
 
           <div className="sidebar-footer">
@@ -125,7 +155,7 @@ export default function App() {
         <main className="main-content">
           <div className="container" style={{ paddingTop: '2.5rem' }}>
             <Routes>
-              <Route path="/" element={<Dashboard showToast={showToast} refreshTrigger={refreshTrigger} />} />
+              <Route path="/" element={<Dashboard showToast={showToast} refreshTrigger={refreshTrigger} onTriggerTransfer={triggerTransfer} />} />
               <Route path="/transactions" element={<Transactions />} />
               <Route path="/cards" element={<Cards />} />
             </Routes>
@@ -168,6 +198,13 @@ export default function App() {
             </div>
           </div>
         )}
+
+        <TransferModal
+          isOpen={transferOpen}
+          onClose={() => setTransferOpen(false)}
+          onSubmit={handleTransfer}
+          sourceAccount={selectedSource}
+        />
 
         {/* ── Toast ─── */}
         {toast && (

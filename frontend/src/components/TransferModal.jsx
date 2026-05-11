@@ -23,11 +23,13 @@ const icons = {
 };
 
 const TransferModal = ({ isOpen, onClose, onSubmit, sourceAccount }) => {
+  const [manualSourceId, setManualSourceId] = useState('');
   const [toAccountId, setToAccountId] = useState('');
   const [amount, setAmount] = useState('');
 
   useEffect(() => {
     if (isOpen) {
+      setManualSourceId('');
       setToAccountId('');
       setAmount('');
     }
@@ -37,8 +39,9 @@ const TransferModal = ({ isOpen, onClose, onSubmit, sourceAccount }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!toAccountId || !amount || parseFloat(amount) <= 0) return;
-    onSubmit(sourceAccount.id, parseInt(toAccountId), parseFloat(amount));
+    const fromId = sourceAccount ? sourceAccount.id : parseInt(manualSourceId);
+    if (!fromId || !toAccountId || !amount || parseFloat(amount) <= 0) return;
+    onSubmit(fromId, parseInt(toAccountId), parseFloat(amount));
   };
 
   return (
@@ -52,10 +55,31 @@ const TransferModal = ({ isOpen, onClose, onSubmit, sourceAccount }) => {
 
         <h2>Internal Fund Transfer</h2>
         <p className="modal-sub">
-          Transfer money from <span>{sourceAccount?.accountOwnerName}</span>
+          {sourceAccount ? (
+            <>Transfer money from <span>{sourceAccount.accountOwnerName}</span></>
+          ) : (
+            <>Transfer funds between accounts</>
+          )}
         </p>
 
         <form onSubmit={handleSubmit}>
+          {!sourceAccount && (
+            <div className="form-group">
+              <label className="label">Source Account ID</label>
+              <div className="input-icon-wrap">
+                <span className="icon-prefix">{icons.bank}</span>
+                <input
+                  type="number"
+                  className="input"
+                  placeholder="From Account ID"
+                  value={manualSourceId}
+                  onChange={(e) => setManualSourceId(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+          )}
+
           <div className="form-group">
             <label className="label">Destination Account ID</label>
             <div className="input-icon-wrap">
