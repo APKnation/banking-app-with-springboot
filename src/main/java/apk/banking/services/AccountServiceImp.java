@@ -26,6 +26,11 @@ public class AccountServiceImp  implements AccountService {
         return accountRepository.findAll();
     }
 
+    @Override
+    public Account getAccountById(Long id) {
+        return accountRepository.findById(id).orElse(null);
+    }
+
     //update method
     @Override
     public Account updateAccount(Account account) {
@@ -34,13 +39,12 @@ public class AccountServiceImp  implements AccountService {
      //delete method
     @Override
     public void deleteAccountById(Long id) {
-
+        if (!accountRepository.existsById(id)) {
+            throw new RuntimeException("Account not found with id: " + id);
+        }
+        accountRepository.deleteById(id);
     }
 
-    @Override
-    public Account getAccountById(Long id) {
-        return accountRepository.findById(id).orElse(null);
-    }
 
 @Override
     public Account deposit(Long id, double amount) {
