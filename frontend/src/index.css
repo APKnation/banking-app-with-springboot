@@ -720,3 +720,69 @@ a      { text-decoration: none; color: inherit; }
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* ─── Loan Table & Status ────────────────────────────── */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.8rem;
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid transparent;
+}
+
+.status-pill.pending { 
+  background: rgba(99, 102, 241, 0.1); 
+  color: #818cf8; 
+  border-color: rgba(99, 102, 241, 0.2); 
+}
+.status-pill.approved { 
+  background: rgba(16, 185, 129, 0.1); 
+  color: #34d399; 
+  border-color: rgba(16, 185, 129, 0.2); 
+}
+.status-pill.rejected { 
+  background: rgba(244, 63, 94, 0.1); 
+  color: #fb7185; 
+  border-color: rgba(244, 63, 94, 0.2); 
+}
+.status-pill.closed { 
+  background: rgba(255, 255, 255, 0.05); 
+  color: var(--text-muted); 
+  border-color: var(--border); 
+}
+
+.transaction-table th {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1.25rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+}
+
+.transaction-table td {
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+  color: var(--text);
+  transition: var(--transition);
+}
+
+.transaction-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.loan-id-cell {
+  font-family: 'Courier New', monospace;
+  color: var(--primary-light);
+  font-weight: 600;
+  background: rgba(99, 102, 241, 0.08);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}

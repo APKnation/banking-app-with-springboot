@@ -114,15 +114,15 @@ const Loans = ({ showToast }) => {
                 </tr>
               ) : (
                 loans.map(loan => (
-                  <tr key={loan.id}>
-                    <td><span className="account-id">#{loan.id}</span></td>
+                  <tr key={loan.id} className="loan-row">
+                    <td><span className="loan-id-cell">#{loan.id}</span></td>
                     <td className="font-semibold">{loan.accountOwnerName}</td>
-                    <td className="font-semibold">Tsh {loan.principalAmount.toLocaleString()}</td>
-                    <td>Tsh {loan.totalRepayable.toLocaleString()}</td>
+                    <td className="font-semibold">Tsh {loan.principalAmount?.toLocaleString()}</td>
+                    <td>Tsh {loan.totalRepayable?.toLocaleString()}</td>
                     <td className="font-bold" style={{ color: 'var(--primary-light)' }}>
-                      Tsh {loan.remainingBalance.toLocaleString()}
+                      Tsh {loan.remainingBalance?.toLocaleString()}
                     </td>
-                    <td>Tsh {loan.monthlyInstallment.toLocaleString()}</td>
+                    <td>Tsh {loan.monthlyInstallment?.toLocaleString()}</td>
                     <td className="text-center">
                       <span className={`status-pill ${loan.status.toLowerCase()}`}>
                         {loan.status}
@@ -207,20 +207,6 @@ const Loans = ({ showToast }) => {
           </div>
         </div>
       )}
-
-      <style dangerouslySetInnerHTML={{__html: `
-        .status-pill {
-          padding: 0.25rem 0.6rem;
-          border-radius: 99px;
-          font-size: 0.7rem;
-          font-weight: 700;
-          text-transform: uppercase;
-        }
-        .status-pill.pending { background: rgba(99, 102, 241, 0.1); color: var(--primary-light); }
-        .status-pill.approved { background: rgba(16, 185, 129, 0.1); color: var(--success); }
-        .status-pill.rejected { background: rgba(244, 63, 94, 0.1); color: var(--danger); }
-        .status-pill.closed { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); }
-      `}} />
     </div>
   );
 };
