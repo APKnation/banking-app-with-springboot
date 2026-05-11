@@ -40,4 +40,13 @@ public class AccountServiceImp  implements AccountService {
     public Account getAccountById(Long id) {
         return accountRepository.findById(id).orElse(null);
     }
+
+  @Override
+    public Account deposit(Account account,Long id,  double amount) {
+       Account depositedAccount = deposit(account,id,amount);
+       double total = depositedAccount.getBalance()+amount;
+       depositedAccount.setBalance(total);
+       Account savedAccount=accountRepository.save(depositedAccount);
+       return depositedAccount;
+  }
 }
