@@ -158,8 +158,8 @@ const Transactions = () => {
         }
 
         .type-tag.withdraw {
-          background: rgba(244, 63, 94, 0.1);
-          color: #f43f5e;
+          background: rgba(168, 85, 247, 0.1);
+          color: #a855f7;
         }
 
         .amount-cell {
@@ -169,7 +169,7 @@ const Transactions = () => {
         }
 
         .deposit-text { color: #10b981; }
-        .withdraw-text { color: #f43f5e; }
+        .withdraw-text { color: #a855f7; }
 
         .status-pill {
           font-size: 0.7rem;
