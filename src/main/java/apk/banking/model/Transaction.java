@@ -21,5 +21,6 @@ public class Transaction {
     private String type; 
     private Double amount;
     private Double balanceAfterTransaction;
+    private String status; // COMPLETED, PENDING, FAILED
     private LocalDateTime timestamp;
 }

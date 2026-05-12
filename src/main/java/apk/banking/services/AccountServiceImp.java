@@ -67,7 +67,7 @@ public class AccountServiceImp implements AccountService {
         account.setBalance(account.getBalance() + amount);
         Account updated = accountRepository.save(account);
 
-        transactionRepository.save(new Transaction(null, id, account.getAccountOwnerName(), "DEPOSIT", amount, updated.getBalance(), LocalDateTime.now()));
+        transactionRepository.save(new Transaction(null, id, account.getAccountOwnerName(), "DEPOSIT", amount, updated.getBalance(), "COMPLETED", LocalDateTime.now()));
 
         return updated;
     }
@@ -84,7 +84,7 @@ public class AccountServiceImp implements AccountService {
         account.setBalance(account.getBalance() - amount);
         Account updated = accountRepository.save(account);
 
-        transactionRepository.save(new Transaction(null, id, account.getAccountOwnerName(), "WITHDRAW", amount, updated.getBalance(), LocalDateTime.now()));
+        transactionRepository.save(new Transaction(null, id, account.getAccountOwnerName(), "WITHDRAW", amount, updated.getBalance(), "COMPLETED", LocalDateTime.now()));
 
         return updated;
     }
@@ -103,11 +103,11 @@ public class AccountServiceImp implements AccountService {
         // Deduct from source
         fromAccount.setBalance(fromAccount.getBalance() - amount);
         Account updatedFrom = accountRepository.save(fromAccount);
-        transactionRepository.save(new Transaction(null, fromId, fromAccount.getAccountOwnerName(), "TRANSFER_OUT", amount, updatedFrom.getBalance(), LocalDateTime.now()));
+        transactionRepository.save(new Transaction(null, fromId, fromAccount.getAccountOwnerName(), "TRANSFER_OUT", amount, updatedFrom.getBalance(), "COMPLETED", LocalDateTime.now()));
 
         // Add to destination
         toAccount.setBalance(toAccount.getBalance() + amount);
         Account updatedTo = accountRepository.save(toAccount);
-        transactionRepository.save(new Transaction(null, toId, toAccount.getAccountOwnerName(), "TRANSFER_IN", amount, updatedTo.getBalance(), LocalDateTime.now()));
+        transactionRepository.save(new Transaction(null, toId, toAccount.getAccountOwnerName(), "TRANSFER_IN", amount, updatedTo.getBalance(), "COMPLETED", LocalDateTime.now()));
     }
 }

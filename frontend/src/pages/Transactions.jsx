@@ -82,7 +82,9 @@ const Transactions = () => {
                     {tx.type === 'DEPOSIT' ? '+' : '-'}Tsh {tx.amount.toLocaleString()}
                   </td>
                   <td className="text-right">
-                    <span className="status-pill">Completed</span>
+                    <span className={`status-pill ${tx.status?.toLowerCase() || 'completed'}`}>
+                      {tx.status || 'COMPLETED'}
+                    </span>
                   </td>
                 </tr>
               ))}
@@ -173,11 +175,17 @@ const Transactions = () => {
 
         .status-pill {
           font-size: 0.7rem;
-          color: #34d399;
-          padding: 0.25rem 0.5rem;
-          background: rgba(52, 211, 153, 0.05);
-          border: 1px solid rgba(52, 211, 153, 0.2);
+          padding: 0.25rem 0.6rem;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid var(--border);
+          border-radius: 4px;
+          text-transform: uppercase;
+          font-weight: 700;
+          letter-spacing: 0.02em;
         }
+        .status-pill.completed { color: #34d399; background: rgba(52, 211, 153, 0.05); border-color: rgba(52, 211, 153, 0.2); }
+        .status-pill.pending   { color: #fbbf24; background: rgba(251, 191, 36, 0.05); border-color: rgba(251, 191, 36, 0.2); }
+        .status-pill.failed    { color: #f87171; background: rgba(248, 113, 113, 0.05); border-color: rgba(248, 113, 113, 0.2); }
 
         .text-right { text-align: right; }
         .text-left { text-align: left; }
