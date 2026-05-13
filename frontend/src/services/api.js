@@ -6,6 +6,20 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+// Add a request interceptor
+api.interceptors.request.use(
+  (config) => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.token) {
+      config.headers.Authorization = `Bearer ${user.token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // Accounts
 export const getAccounts = () => api.get('/account');
 export const getAccount = (id) => api.get(`/account/${id}`);

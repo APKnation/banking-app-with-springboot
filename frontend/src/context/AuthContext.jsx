@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (username, password) => {
-        const response = await axios.post('http://localhost:8080/api/auth/login', { username, password });
+        const response = await axios.post('http://localhost:8081/api/auth/login', { username, password });
         const userData = response.data;
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const register = async (username, email, password, role) => {
-        const response = await axios.post('http://localhost:8080/api/auth/register', { username, email, password, role });
+        const response = await axios.post('http://localhost:8081/api/auth/register', { username, email, password, role });
         const userData = response.data;
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const resetPassword = async (email, newPassword) => {
-        await axios.post('http://localhost:8080/api/auth/reset-password', { email, newPassword });
+        await axios.post('http://localhost:8081/api/auth/reset-password', { email, newPassword });
     };
 
     return (
