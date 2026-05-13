@@ -25,4 +25,8 @@ public class Account {
     private String accountType; // SAVINGS, CURRENT
     private Double balance;
     private LocalDateTime createdAt;
+
+    public String getAccountOwnerName() {
+        return owner != null ? (owner.getFullName() != null ? owner.getFullName() : owner.getUsername()) : "Unknown";
+    }
 }

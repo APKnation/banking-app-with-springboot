@@ -56,7 +56,7 @@ public class AccountServiceImp implements AccountService {
                 .orElseThrow(() -> new RuntimeException("Account not found"));
         account.setBalance(account.getBalance() + amount);
         Account updated = accountRepository.save(account);
-        String ownerName = account.getOwner() != null ? account.getOwner().getFullName() : "Unknown";
+        String ownerName = account.getAccountOwnerName();
         transactionRepository.save(new Transaction(null, id, null, ownerName, "DEPOSIT", amount, updated.getBalance(), "COMPLETED", LocalDateTime.now()));
         return updated;
     }
@@ -70,7 +70,7 @@ public class AccountServiceImp implements AccountService {
         }
         account.setBalance(account.getBalance() - amount);
         Account updated = accountRepository.save(account);
-        String ownerName = account.getOwner() != null ? account.getOwner().getFullName() : "Unknown";
+        String ownerName = account.getAccountOwnerName();
         transactionRepository.save(new Transaction(null, id, null, ownerName, "WITHDRAW", amount, updated.getBalance(), "COMPLETED", LocalDateTime.now()));
         return updated;
     }
@@ -86,7 +86,7 @@ public class AccountServiceImp implements AccountService {
             throw new RuntimeException("Insufficient balance for transfer");
         }
 
-        String ownerName = fromAccount.getOwner() != null ? fromAccount.getOwner().getFullName() : "Unknown";
+        String ownerName = fromAccount.getAccountOwnerName();
         // Create PENDING transaction for approval
         transactionRepository.save(new Transaction(
             null, 
@@ -135,7 +135,7 @@ public class AccountServiceImp implements AccountService {
         toAccount.setBalance(toAccount.getBalance() + tx.getAmount());
         accountRepository.save(toAccount);
         
-        String ownerName = toAccount.getOwner() != null ? toAccount.getOwner().getFullName() : "Unknown";
+        String ownerName = toAccount.getAccountOwnerName();
         // Create matching TRANSFER_IN for recipient
         transactionRepository.save(new Transaction(
             null, 
