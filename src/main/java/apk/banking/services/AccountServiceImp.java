@@ -56,7 +56,8 @@ public class AccountServiceImp implements AccountService {
                 .orElseThrow(() -> new RuntimeException("Account not found"));
         account.setBalance(account.getBalance() + amount);
         Account updated = accountRepository.save(account);
-        transactionRepository.save(new Transaction(null, id, null, account.getAccountOwnerName(), "DEPOSIT", amount, updated.getBalance(), "COMPLETED", LocalDateTime.now()));
+        String ownerName = account.getOwner() != null ? account.getOwner().getFullName() : "Unknown";
+        transactionRepository.save(new Transaction(null, id, null, ownerName, "DEPOSIT", amount, updated.getBalance(), "COMPLETED", LocalDateTime.now()));
         return updated;
     }
 
@@ -69,7 +70,8 @@ public class AccountServiceImp implements AccountService {
         }
         account.setBalance(account.getBalance() - amount);
         Account updated = accountRepository.save(account);
-        transactionRepository.save(new Transaction(null, id, null, account.getAccountOwnerName(), "WITHDRAW", amount, updated.getBalance(), "COMPLETED", LocalDateTime.now()));
+        String ownerName = account.getOwner() != null ? account.getOwner().getFullName() : "Unknown";
+        transactionRepository.save(new Transaction(null, id, null, ownerName, "WITHDRAW", amount, updated.getBalance(), "COMPLETED", LocalDateTime.now()));
         return updated;
     }
 
@@ -84,12 +86,13 @@ public class AccountServiceImp implements AccountService {
             throw new RuntimeException("Insufficient balance for transfer");
         }
 
+        String ownerName = fromAccount.getOwner() != null ? fromAccount.getOwner().getFullName() : "Unknown";
         // Create PENDING transaction for approval
         transactionRepository.save(new Transaction(
             null, 
             fromId, 
             toId, 
-            fromAccount.getAccountOwnerName(), 
+            ownerName, 
             "TRANSFER_OUT", 
             amount, 
             fromAccount.getBalance(), 
@@ -132,12 +135,13 @@ public class AccountServiceImp implements AccountService {
         toAccount.setBalance(toAccount.getBalance() + tx.getAmount());
         accountRepository.save(toAccount);
         
+        String ownerName = toAccount.getOwner() != null ? toAccount.getOwner().getFullName() : "Unknown";
         // Create matching TRANSFER_IN for recipient
         transactionRepository.save(new Transaction(
             null, 
             toAccount.getId(), 
             fromAccount.getId(), 
-            toAccount.getAccountOwnerName(), 
+            ownerName, 
             "TRANSFER_IN", 
             tx.getAmount(), 
             toAccount.getBalance(), 
