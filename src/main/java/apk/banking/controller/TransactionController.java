@@ -2,6 +2,7 @@ package apk.banking.controller;
 
 import apk.banking.model.Transaction;
 import apk.banking.repository.TransactionRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ public class TransactionController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'TELLER')")
     public ResponseEntity<List<Transaction>> getAllTransactions() {
         List<Transaction> transactions = transactionRepository.findAll();
         // Return in reverse chronological order
