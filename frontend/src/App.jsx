@@ -4,6 +4,8 @@ import Dashboard from './pages/Dashboard';
 import Transactions from './pages/Transactions';
 import Cards from './pages/Cards';
 import Loans from './pages/Loans';
+import Customers from './pages/Customers';
+import CustomerProfile from './pages/CustomerProfile';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ResetPassword from './pages/ResetPassword';
@@ -117,6 +119,11 @@ const AppContent = () => {
           <NavLink to="/loans" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setSidebarOpen(false)}>
             {Icon.loan} Loans
           </NavLink>
+          {['ADMIN', 'TELLER', 'MANAGER'].includes(user.role) && (
+            <NavLink to="/customers" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setSidebarOpen(false)}>
+              <span style={{ display: 'flex', alignItems: 'center' }}>{Icon.user}</span> Customers
+            </NavLink>
+          )}
 
           {['ADMIN', 'TELLER'].includes(user.role) && (
             <button 
@@ -161,6 +168,8 @@ const AppContent = () => {
             <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
             <Route path="/cards" element={<ProtectedRoute><Cards /></ProtectedRoute>} />
             <Route path="/loans" element={<ProtectedRoute><Loans showToast={showToast} /></ProtectedRoute>} />
+            <Route path="/customers" element={<ProtectedRoute roles={['ADMIN', 'TELLER', 'MANAGER']}><Customers /></ProtectedRoute>} />
+            <Route path="/customers/:id" element={<ProtectedRoute roles={['ADMIN', 'TELLER', 'MANAGER']}><CustomerProfile /></ProtectedRoute>} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>
@@ -237,16 +246,6 @@ export default function App() {
       <AuthProvider>
         <AppContent />
       </AuthProvider>
-    </BrowserRouter>
-  );
-}
--out both',
-            maxWidth: '320px',
-          }}>
-            {toast.msg}
-          </div>
-        )}
-      </div>
     </BrowserRouter>
   );
 }

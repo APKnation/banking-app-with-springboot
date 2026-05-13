@@ -45,4 +45,13 @@ export const repayLoan = (id, amount) => api.put(`/loans/${id}/repay`, { amount 
 export const approveTransfer = (id) => api.put(`/account/transactions/${id}/approve`);
 export const rejectTransfer = (id) => api.put(`/account/transactions/${id}/reject`);
 
+// Customers
+export const getCustomers = () => api.get('/customers');
+export const searchCustomers = (query) => api.get('/customers/search', { params: { query } });
+export const getCustomerById = (id) => api.get(`/customers/${id}`);
+export const createCustomer = (customer) => api.post('/customers', customer);
+export const updateCustomer = (id, customer) => api.put(`/customers/${id}`, customer);
+export const deactivateCustomer = (id) => api.delete(`/customers/${id}`);
+export const activateCustomer = (id) => api.put(`/customers/${id}/activate`);
+
 export default api;
