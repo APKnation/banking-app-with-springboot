@@ -1,9 +1,6 @@
 package apk.banking.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +18,10 @@ public class Account {
 
     private String accountNumber;
     private String cardNumber;
-    private String accountOwnerName;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User owner;
     private String accountType; // SAVINGS, CURRENT
     private Double balance;
     private LocalDateTime createdAt;
