@@ -21,16 +21,7 @@ public class AccountServiceImp implements AccountService {
 
     @Override
     public Account createAccount(Account account) {
-        // Generate a simple unique account number
         account.setAccountNumber("ACC-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-        
-        // Generate a 16-digit card number
-        StringBuilder card = new StringBuilder("4"); // Start with 4 for Visa-style
-        for (int i = 0; i < 15; i++) {
-            card.append((int) (Math.random() * 10));
-        }
-        account.setCardNumber(card.toString());
-        
         account.setCreatedAt(LocalDateTime.now());
         if (account.getAccountType() == null) account.setAccountType("SAVINGS");
         return accountRepository.save(account);
@@ -63,12 +54,9 @@ public class AccountServiceImp implements AccountService {
     public Account deposit(Long id, double amount) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
-
         account.setBalance(account.getBalance() + amount);
         Account updated = accountRepository.save(account);
-
-        transactionRepository.save(new Transaction(null, id, account.getAccountOwnerName(), "DEPOSIT", amount, updated.getBalance(), "COMPLETED", LocalDateTime.now()));
-
+        transactionRepository.save(new Transaction(null, id, null, account.getAccountOwnerName(), "DEPOSIT", amount, updated.getBalance(), "COMPLETED", LocalDateTime.now()));
         return updated;
     }
 
@@ -76,16 +64,12 @@ public class AccountServiceImp implements AccountService {
     public Account withdraw(Long id, double amount) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
-
         if (account.getBalance() < amount) {
             throw new RuntimeException("Insufficient balance");
         }
-
         account.setBalance(account.getBalance() - amount);
         Account updated = accountRepository.save(account);
-
-        transactionRepository.save(new Transaction(null, id, account.getAccountOwnerName(), "WITHDRAW", amount, updated.getBalance(), "COMPLETED", LocalDateTime.now()));
-
+        transactionRepository.save(new Transaction(null, id, null, account.getAccountOwnerName(), "WITHDRAW", amount, updated.getBalance(), "COMPLETED", LocalDateTime.now()));
         return updated;
     }
 
@@ -93,21 +77,86 @@ public class AccountServiceImp implements AccountService {
     public void transfer(Long fromId, Long toId, double amount) {
         Account fromAccount = accountRepository.findById(fromId)
                 .orElseThrow(() -> new RuntimeException("Source account not found"));
-        Account toAccount = accountRepository.findById(toId)
+        accountRepository.findById(toId)
                 .orElseThrow(() -> new RuntimeException("Destination account not found"));
 
         if (fromAccount.getBalance() < amount) {
             throw new RuntimeException("Insufficient balance for transfer");
         }
 
+        // Create PENDING transaction for approval
+        transactionRepository.save(new Transaction(
+            null, 
+            fromId, 
+            toId, 
+            fromAccount.getAccountOwnerName(), 
+            "TRANSFER_OUT", 
+            amount, 
+            fromAccount.getBalance(), 
+            "PENDING", 
+            LocalDateTime.now()
+        ));
+    }
+
+    @Override
+    public void approveTransfer(Long transactionId) {
+        Transaction tx = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+
+        if (!"PENDING".equals(tx.getStatus())) {
+            throw new RuntimeException("Transaction is not in PENDING state");
+        }
+
+        Account fromAccount = accountRepository.findById(tx.getAccountId())
+                .orElseThrow(() -> new RuntimeException("Source account not found"));
+        Account toAccount = accountRepository.findById(tx.getTargetAccountId())
+                .orElseThrow(() -> new RuntimeException("Destination account not found"));
+
+        if (fromAccount.getBalance() < tx.getAmount()) {
+            tx.setStatus("REJECTED");
+            transactionRepository.save(tx);
+            throw new RuntimeException("Insufficient balance at time of approval");
+        }
+
         // Deduct from source
-        fromAccount.setBalance(fromAccount.getBalance() - amount);
-        Account updatedFrom = accountRepository.save(fromAccount);
-        transactionRepository.save(new Transaction(null, fromId, fromAccount.getAccountOwnerName(), "TRANSFER_OUT", amount, updatedFrom.getBalance(), "COMPLETED", LocalDateTime.now()));
+        fromAccount.setBalance(fromAccount.getBalance() - tx.getAmount());
+        accountRepository.save(fromAccount);
+        
+        // Update source transaction
+        tx.setStatus("COMPLETED");
+        tx.setBalanceAfterTransaction(fromAccount.getBalance());
+        tx.setTimestamp(LocalDateTime.now());
+        transactionRepository.save(tx);
 
         // Add to destination
-        toAccount.setBalance(toAccount.getBalance() + amount);
-        Account updatedTo = accountRepository.save(toAccount);
-        transactionRepository.save(new Transaction(null, toId, toAccount.getAccountOwnerName(), "TRANSFER_IN", amount, updatedTo.getBalance(), "COMPLETED", LocalDateTime.now()));
+        toAccount.setBalance(toAccount.getBalance() + tx.getAmount());
+        accountRepository.save(toAccount);
+        
+        // Create matching TRANSFER_IN for recipient
+        transactionRepository.save(new Transaction(
+            null, 
+            toAccount.getId(), 
+            fromAccount.getId(), 
+            toAccount.getAccountOwnerName(), 
+            "TRANSFER_IN", 
+            tx.getAmount(), 
+            toAccount.getBalance(), 
+            "COMPLETED", 
+            LocalDateTime.now()
+        ));
+    }
+
+    @Override
+    public void rejectTransfer(Long transactionId) {
+        Transaction tx = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+        tx.setStatus("REJECTED");
+        tx.setTimestamp(LocalDateTime.now());
+        transactionRepository.save(tx);
+    }
+
+    @Override
+    public List<Transaction> getAllTransactions() {
+        return transactionRepository.findAll();
     }
 }

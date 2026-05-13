@@ -17,10 +17,11 @@ public class Transaction {
     private Long id;
 
     private Long accountId;
+    private Long targetAccountId; // For transfers
     private String accountOwnerName;
     private String type; 
     private Double amount;
     private Double balanceAfterTransaction;
-    private String status; // COMPLETED, PENDING, FAILED
+    private String status; // COMPLETED, PENDING, REJECTED
     private LocalDateTime timestamp;
 }

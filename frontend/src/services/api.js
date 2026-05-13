@@ -27,4 +27,7 @@ export const approveLoan = (id) => api.put(`/loans/${id}/approve`);
 export const rejectLoan = (id) => api.put(`/loans/${id}/reject`);
 export const repayLoan = (id, amount) => api.put(`/loans/${id}/repay`, { amount });
 
+export const approveTransfer = (id) => api.put(`/account/transactions/${id}/approve`);
+export const rejectTransfer = (id) => api.put(`/account/transactions/${id}/reject`);
+
 export default api;

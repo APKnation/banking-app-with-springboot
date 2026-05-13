@@ -1,6 +1,7 @@
 package apk.banking.services;
 
 import apk.banking.model.Account;
+import apk.banking.model.Transaction;
 import java.util.List;
 
 public interface AccountService {
@@ -18,4 +19,7 @@ public interface AccountService {
     Account deposit(Long id, double amount);
     Account withdraw(Long id, double amount);
     void transfer(Long fromId, Long toId, double amount);
+    void approveTransfer(Long transactionId);
+    void rejectTransfer(Long transactionId);
+    List<Transaction> getAllTransactions();
 }

@@ -5,6 +5,7 @@ import apk.banking.model.Account;
 import apk.banking.repository.AccountRepository;
 import apk.banking.services.AccountService;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,33 +22,44 @@ public class AccountController {
         this.accountService = accountService;
         this.accountRepository = accountRepository;
     }
+
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'TELLER')")
     public ResponseEntity<Account> createAccount(@RequestBody Account account) {
         Account createdAccount = accountService.createAccount(account);
         return ResponseEntity.ok(createdAccount);
     }
+
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'TELLER')")
     public ResponseEntity<List<Account>>getAllAccounts() {
         List<Account> accounts = accountService.getAllAccount();
         return ResponseEntity.ok(accounts);
     }
+
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'TELLER', 'CUSTOMER')")
     public ResponseEntity<Account> getAccountById(@PathVariable Long id) {
         Account account = accountService.getAccountById(id);
         return ResponseEntity.ok(account);
     }
+
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<Account> updateAccount(@RequestBody Account account) {
         Account updatedAccount = accountService.updateAccount(account);
         return ResponseEntity.ok(updatedAccount);
     }
+
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
         accountService.deleteAccountById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}/deposit")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TELLER')")
     public ResponseEntity<Account> deposit(
             @PathVariable Long id,
             @RequestBody DepositRequest request) {
@@ -55,7 +67,9 @@ public class AccountController {
         Account account = accountService.deposit(id, request.getAmount());
         return ResponseEntity.ok(account);
     }
+
     @PutMapping("/{id}/withdraw")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TELLER')")
     public ResponseEntity<Account> withdraw(
             @PathVariable Long id,
             @RequestBody DepositRequest request) {
@@ -64,10 +78,25 @@ public class AccountController {
     }
 
     @PutMapping("/{id}/transfer")
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN', 'TELLER')")
     public ResponseEntity<Void> transfer(
             @PathVariable Long id,
             @RequestBody apk.banking.dto.TransferRequest request) {
         accountService.transfer(id, request.getToAccountId(), request.getAmount());
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/transactions/{id}/approve")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    public ResponseEntity<Void> approveTransfer(@PathVariable Long id) {
+        accountService.approveTransfer(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/transactions/{id}/reject")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    public ResponseEntity<Void> rejectTransfer(@PathVariable Long id) {
+        accountService.rejectTransfer(id);
         return ResponseEntity.ok().build();
     }
 }
