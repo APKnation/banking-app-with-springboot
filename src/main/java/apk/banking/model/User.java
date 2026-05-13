@@ -33,6 +33,14 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
 
+    private String fullName;
+    private String nationalId;
+    private String address;
+    private String phoneNumber;
+
+    @Builder.Default
+    private boolean isActive = true;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -58,6 +66,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isActive;
     }
 }
