@@ -31,7 +31,8 @@ export const withdraw = (id, amount) => api.put(`/account/${id}/withdraw`, { amo
 export const transfer = (fromId, toId, amount) => api.put(`/account/${fromId}/transfer`, { toAccountId: toId, amount });
 
 // Transactions
-export const getTransactions = () => api.get('/transactions');
+export const getTransactions = (params) => api.get('/transactions', { params });
+export const getMiniStatement = (accountId) => api.get(`/transactions/account/${accountId}/mini-statement`);
 
 // Loans
 export const getLoans = () => api.get('/loans');
