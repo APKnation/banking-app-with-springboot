@@ -30,7 +30,6 @@ const Transactions = () => {
         Object.entries(filters).filter(([_, v]) => v !== '')
       );
       
-      // Convert dates to ISO if present
       if (activeFilters.startDate) activeFilters.startDate = new Date(activeFilters.startDate).toISOString();
       if (activeFilters.endDate) activeFilters.endDate = new Date(activeFilters.endDate).toISOString();
 
@@ -46,7 +45,7 @@ const Transactions = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchTransactions();
-    }, 500); // Debounce
+    }, 500); 
     return () => clearTimeout(timer);
   }, [filters]);
 
@@ -77,7 +76,6 @@ const Transactions = () => {
           return;
       }
       
-      // Create a clean print view
       const printWindow = window.open('', '_blank');
       const html = `
         <html>
@@ -109,23 +107,23 @@ const Transactions = () => {
                 </tr>
               </thead>
               <tbody>
-                ${statementData.map(tx => \`
+                ${statementData.map(tx => `
                   <tr>
-                    <td>\${new Date(tx.timestamp).toLocaleDateString()}</td>
-                    <td>\${tx.type}</td>
-                    <td>\${tx.type === 'TRANSFER_OUT' ? 'Transfer to #' + tx.targetAccountId : tx.type}</td>
-                    <td class="amount \${tx.type.includes('DEPOSIT') || tx.type.includes('IN') ? 'deposit' : 'withdraw'}">
-                      \${tx.type.includes('DEPOSIT') || tx.type.includes('IN') ? '+' : '-'}Tsh \${tx.amount.toLocaleString()}
+                    <td>${new Date(tx.timestamp).toLocaleDateString()}</td>
+                    <td>${tx.type}</td>
+                    <td>${tx.type === 'TRANSFER_OUT' ? 'Transfer to #' + tx.targetAccountId : tx.type}</td>
+                    <td class="amount ${tx.type.includes('DEPOSIT') || tx.type.includes('IN') ? 'deposit' : 'withdraw'}">
+                      ${tx.type.includes('DEPOSIT') || tx.type.includes('IN') ? '+' : '-'}Tsh ${tx.amount.toLocaleString()}
                     </td>
                   </tr>
-                \`).join('')}
+                `).join('')}
               </tbody>
             </table>
             <div class="footer">Thank you for banking with WekezaBank. This is a computer-generated statement.</div>
             <script>window.print();</script>
           </body>
         </html>
-      \`;
+      `;
       printWindow.document.write(html);
       printWindow.document.close();
     } catch (err) {
@@ -156,7 +154,6 @@ const Transactions = () => {
         </button>
       </div>
 
-      {/* ── Filter Bar ─── */}
       <div className="glass-card p-6" style={{ marginBottom: '2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem', alignItems: 'end' }}>
         <div className="form-group" style={{ margin: 0 }}>
           <label className="label">Type</label>
@@ -223,16 +220,16 @@ const Transactions = () => {
                     {tx.targetAccountId && <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block' }}>Recipient: #{tx.targetAccountId}</span>}
                   </td>
                   <td>
-                    <span className={`type-tag \${tx.type.toLowerCase().replace('_', '-')}`}>
+                    <span className={`type-tag ${tx.type.toLowerCase().replace('_', '-')}`}>
                       {(tx.type === 'DEPOSIT' || tx.type === 'TRANSFER_IN' || tx.type === 'LOAN_DISBURSEMENT') ? Icon.deposit : Icon.withdraw}
                       {tx.type.replace('_', ' ')}
                     </span>
                   </td>
-                  <td className={`amount-cell text-right \${(tx.type === 'DEPOSIT' || tx.type === 'TRANSFER_IN' || tx.type === 'LOAN_DISBURSEMENT') ? 'deposit-text' : 'withdraw-text'}`}>
+                  <td className={`amount-cell text-right ${(tx.type === 'DEPOSIT' || tx.type === 'TRANSFER_IN' || tx.type === 'LOAN_DISBURSEMENT') ? 'deposit-text' : 'withdraw-text'}`}>
                     {(tx.type === 'DEPOSIT' || tx.type === 'TRANSFER_IN' || tx.type === 'LOAN_DISBURSEMENT') ? '+' : '-'}Tsh {tx.amount.toLocaleString()}
                   </td>
                   <td className="text-center">
-                    <span className={`status-pill \${tx.status?.toLowerCase() || 'completed'}`}>
+                    <span className={`status-pill ${tx.status?.toLowerCase() || 'completed'}`}>
                       {tx.status || 'COMPLETED'}
                     </span>
                   </td>
@@ -255,7 +252,7 @@ const Transactions = () => {
         </div>
       )}
 
-      <style dangerouslySetInnerHTML={{__html: \`
+      <style dangerouslySetInnerHTML={{__html: `
         .transaction-container {
           background: var(--bg-card);
           border: 1px solid var(--border);
@@ -351,7 +348,7 @@ const Transactions = () => {
         @media (max-width: 768px) {
           .glass-card.p-6 { grid-template-columns: 1fr 1fr; }
         }
-      \`}} />
+      `}} />
     </div>
   );
 };
