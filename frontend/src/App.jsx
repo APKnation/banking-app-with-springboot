@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, NavLink, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, NavLink, Link, Navigate } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Transactions from './pages/Transactions';
 import Cards from './pages/Cards';
 import Loans from './pages/Loans';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ResetPassword from './pages/ResetPassword';
 import TransferModal from './components/TransferModal';
 import * as api from './services/api';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import './App.css';
 
 /* ── SVG Icons ─────────────────────────────────────────── */
@@ -22,23 +26,21 @@ const Icon = {
   bank: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>,
   transfer: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="17 11 21 7 17 3"></polyline><path d="M21 7H9a5 5 0 0 0-5 5v3"></path><polyline points="7 13 3 17 7 21"></polyline><path d="M3 17h12a5 5 0 0 0 5-5V9"></path></svg>,
   close: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>,
+  logout: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>,
 };
 
-const Settings = () => (
-  <div className="container anim-fade-up">
-    <div className="section-header" style={{ marginTop: '2.5rem' }}>
-      <div>
-        <h2>Account Settings</h2>
-        <p>Manage your profile and security preferences</p>
-      </div>
-    </div>
-    <div className="glass-card p-12 text-center">
-      <p className="text-muted">Security settings and profile management coming soon.</p>
-    </div>
-  </div>
-);
+const ProtectedRoute = ({ children, roles }) => {
+  const { user, loading } = useAuth();
+  
+  if (loading) return <div className="spinner"></div>;
+  if (!user) return <Navigate to="/login" />;
+  if (roles && !roles.includes(user.role)) return <Navigate to="/" />;
+  
+  return children;
+};
 
-export default function App() {
+const AppContent = () => {
+  const { user, logout } = useAuth();
   const [toast, setToast] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
@@ -79,35 +81,44 @@ export default function App() {
     setSidebarOpen(false);
   };
 
+  if (!user) {
+    return (
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+    );
+  }
+
   return (
-    <BrowserRouter>
-      <div className="app-layout">
-        {/* ── Mobile Overlay ─── */}
-        {sidebarOpen && <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />}
+    <div className="app-layout">
+      {sidebarOpen && <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />}
 
-        {/* ── Sidebar ─── */}
-        <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
-          <div className="sidebar-header">
-            <Link to="/" className="navbar-brand" onClick={() => setSidebarOpen(false)}>
-              <div className="logo-icon">{Icon.wallet}</div>
-              <h1>Wekeza<span>Bank</span></h1>
-            </Link>
-          </div>
-          
-          <nav className="sidebar-nav">
-            <NavLink to="/" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} end onClick={() => setSidebarOpen(false)}>
-              {Icon.dashboard} Dashboard
-            </NavLink>
-            <NavLink to="/transactions" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setSidebarOpen(false)}>
-              {Icon.transactions} Transactions
-            </NavLink>
-            <NavLink to="/cards" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setSidebarOpen(false)}>
-              {Icon.cards} Cards
-            </NavLink>
-            <NavLink to="/loans" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setSidebarOpen(false)}>
-              {Icon.loan} Loans
-            </NavLink>
+      <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+        <div className="sidebar-header">
+          <Link to="/" className="navbar-brand" onClick={() => setSidebarOpen(false)}>
+            <div className="logo-icon">{Icon.wallet}</div>
+            <h1>Wekeza<span>Bank</span></h1>
+          </Link>
+        </div>
+        
+        <nav className="sidebar-nav">
+          <NavLink to="/" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} end onClick={() => setSidebarOpen(false)}>
+            {Icon.dashboard} Dashboard
+          </NavLink>
+          <NavLink to="/transactions" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setSidebarOpen(false)}>
+            {Icon.transactions} Transactions
+          </NavLink>
+          <NavLink to="/cards" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setSidebarOpen(false)}>
+            {Icon.cards} Cards
+          </NavLink>
+          <NavLink to="/loans" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setSidebarOpen(false)}>
+            {Icon.loan} Loans
+          </NavLink>
 
+          {['ADMIN', 'TELLER'].includes(user.role) && (
             <button 
               className="sidebar-link" 
               style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', marginTop: '0.5rem' }}
@@ -116,116 +127,120 @@ export default function App() {
               <span style={{ color: 'var(--primary-light)', display: 'flex', alignItems: 'center' }}>{Icon.plus}</span> 
               Open Account
             </button>
+          )}
 
-            <button 
-              className="sidebar-link" 
-              style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
-              onClick={() => triggerTransfer(null)}
-            >
-              <span style={{ color: '#a855f7', display: 'flex', alignItems: 'center' }}>{Icon.transfer}</span> 
-              Transfer Funds
-            </button>
-          </nav>
+          <button 
+            className="sidebar-link" 
+            style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+            onClick={() => triggerTransfer(null)}
+          >
+            <span style={{ color: '#a855f7', display: 'flex', alignItems: 'center' }}>{Icon.transfer}</span> 
+            Transfer Funds
+          </button>
 
-          <div className="sidebar-footer">
-            <div className="user-profile">
-              <div className="avatar">WK</div>
-              <div className="user-info">
-                <h4>Wekeza User</h4>
-                <p>Premium Member</p>
-              </div>
-            </div>
-          </div>
-        </aside>
-
-        {/* ── Mobile Navbar ─── */}
-        <nav className="navbar md-only" style={{ display: 'none' }}>
-           <div className="container">
-              <button className="btn btn-ghost p-2" onClick={() => setSidebarOpen(!sidebarOpen)}>
-                {Icon.menu}
-              </button>
-              <div className="navbar-brand">
-                <h1>Wekeza<span>Bank</span></h1>
-              </div>
-              <div className="avatar">WK</div>
-           </div>
+          <button className="sidebar-link logout-btn" onClick={logout}>
+            {Icon.logout} Logout
+          </button>
         </nav>
-        <style dangerouslySetInnerHTML={{__html: `
-          @media (max-width: 1024px) {
-            .navbar.md-only { display: flex !important; }
-          }
-        `}} />
 
-        {/* ── Main Content ─── */}
-        <main className="main-content">
-          <div className="container" style={{ paddingTop: '2.5rem' }}>
-            <Routes>
-              <Route path="/" element={<Dashboard showToast={showToast} refreshTrigger={refreshTrigger} onTriggerTransfer={triggerTransfer} />} />
-              <Route path="/transactions" element={<Transactions />} />
-              <Route path="/cards" element={<Cards />} />
-              <Route path="/loans" element={<Loans showToast={showToast} />} />
-            </Routes>
-          </div>
-        </main>
-
-        {/* ── Create Account Modal ─── */}
-        {addOpen && (
-          <div className="overlay">
-            <div className="modal">
-              <button className="modal-close" onClick={() => setAddOpen(false)}>{Icon.close}</button>
-              <div className="modal-icon deposit">{Icon.bank}</div>
-              <h2>Open New Account</h2>
-              <p className="modal-sub">Fill in the details to create a new bank account.</p>
-              <form onSubmit={handleCreate}>
-                <div className="form-group">
-                  <label className="label">Account Owner Name</label>
-                  <div className="input-icon-wrap">
-                    <span className="icon-prefix">{Icon.user}</span>
-                    <input
-                      type="text"
-                      className="input"
-                      placeholder="Enter full name"
-                      value={newName}
-                      onChange={(e) => setNewName(e.target.value)}
-                      required
-                      autoFocus
-                    />
-                  </div>
-                </div>
-                <div className="modal-footer">
-                  <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.85rem' }}>
-                    {Icon.plus} Create Account
-                  </button>
-                  <button type="button" className="btn btn-ghost" style={{ width: '100%' }} onClick={() => setAddOpen(false)}>
-                    Cancel
-                  </button>
-                </div>
-              </form>
+        <div className="sidebar-footer">
+          <div className="user-profile">
+            <div className="avatar">{user.username.substring(0, 2).toUpperCase()}</div>
+            <div className="user-info">
+              <h4>{user.username}</h4>
+              <p>{user.role.charAt(0) + user.role.slice(1).toLowerCase()}</p>
             </div>
           </div>
-        )}
+        </div>
+      </aside>
 
-        <TransferModal
-          isOpen={transferOpen}
-          onClose={() => setTransferOpen(false)}
-          onSubmit={handleTransfer}
-          sourceAccount={selectedSource}
-        />
+      <main className="main-content">
+        <div className="container" style={{ paddingTop: '2.5rem' }}>
+          <Routes>
+            <Route path="/" element={<ProtectedRoute><Dashboard showToast={showToast} refreshTrigger={refreshTrigger} onTriggerTransfer={triggerTransfer} /></ProtectedRoute>} />
+            <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
+            <Route path="/cards" element={<ProtectedRoute><Cards /></ProtectedRoute>} />
+            <Route path="/loans" element={<ProtectedRoute><Loans showToast={showToast} /></ProtectedRoute>} />
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </div>
+      </main>
 
-        {/* ── Toast ─── */}
-        {toast && (
-          <div style={{
-            position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 200,
-            background: toast.type === 'error' ? 'rgba(244,63,94,0.15)' : 'rgba(16,185,129,0.15)',
-            border: `1px solid ${toast.type === 'error' ? 'rgba(244,63,94,0.3)' : 'rgba(16,185,129,0.3)'}`,
-            backdropFilter: 'blur(12px)',
-            padding: '1rem 1.5rem',
-            borderRadius: '0.75rem',
-            color: toast.type === 'error' ? '#fb7185' : '#34d399',
-            fontWeight: 600,
-            fontSize: '0.9rem',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
-            animation: 'fadeUp 0.3s ease-out both',
+      {addOpen && (
+        <div className="overlay">
+          <div className="modal">
+            <button className="modal-close" onClick={() => setAddOpen(false)}>{Icon.close}</button>
+            <div className="modal-icon deposit">{Icon.bank}</div>
+            <h2>Open New Account</h2>
+            <p className="modal-sub">Fill in the details to create a new bank account.</p>
+            <form onSubmit={handleCreate}>
+              <div className="form-group">
+                <label className="label">Account Owner Name</label>
+                <div className="input-icon-wrap">
+                  <span className="icon-prefix">{Icon.user}</span>
+                  <input
+                    type="text"
+                    className="input"
+                    placeholder="Enter full name"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    required
+                    autoFocus
+                  />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.85rem' }}>
+                  {Icon.plus} Create Account
+                </button>
+                <button type="button" className="btn btn-ghost" style={{ width: '100%' }} onClick={() => setAddOpen(false)}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <TransferModal
+        isOpen={transferOpen}
+        onClose={() => setTransferOpen(false)}
+        onSubmit={handleTransfer}
+        sourceAccount={selectedSource}
+      />
+
+      {toast && (
+        <div style={{
+          position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 200,
+          background: toast.type === 'error' ? 'rgba(244,63,94,0.15)' : 'rgba(16,185,129,0.15)',
+          border: `1px solid ${toast.type === 'error' ? 'rgba(244,63,94,0.3)' : 'rgba(16,185,129,0.3)'}`,
+          backdropFilter: 'blur(12px)',
+          padding: '1rem 1.5rem',
+          borderRadius: '0.75rem',
+          color: toast.type === 'error' ? '#fb7185' : '#34d399',
+          fontWeight: 600,
+          fontSize: '0.9rem',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+          animation: 'fadeUp 0.3s ease-out both',
+          maxWidth: '320px',
+        }}>
+          {toast.msg}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </BrowserRouter>
+  );
+}
+-out both',
             maxWidth: '320px',
           }}>
             {toast.msg}
