@@ -3,6 +3,8 @@ package apk.banking.repository;
 import apk.banking.model.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AccountRepository extends JpaRepository<Account, Long> {
+import java.util.List;
 
+public interface AccountRepository extends JpaRepository<Account, Long> {
+    List<Account> findByOwnerId(Long ownerId);
 }

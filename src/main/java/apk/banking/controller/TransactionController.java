@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/transactions")
+@CrossOrigin(origins = "*")
 public class TransactionController {
 
     private final TransactionRepository transactionRepository;

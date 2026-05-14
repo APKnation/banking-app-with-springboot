@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/loans")
+@CrossOrigin(origins = "*")
 public class LoanController {
 
     private final LoanService loanService;
@@ -43,7 +44,7 @@ public class LoanController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'TELLER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'TELLER', 'CUSTOMER')")
     public ResponseEntity<List<Loan>> getAllLoans() {
         return ResponseEntity.ok(loanService.getAllLoans());
     }

@@ -59,7 +59,7 @@ const AppContent = () => {
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      await api.createAccount({ accountOwnerName: newName, balance: 0 });
+      await api.createAccount({ accountType: newName || 'SAVINGS', balance: 0 });
       setNewName(''); setAddOpen(false);
       setRefreshTrigger(prev => prev + 1);
       showToast('Account created successfully!');
@@ -125,7 +125,7 @@ const AppContent = () => {
             </NavLink>
           )}
 
-          {['ADMIN', 'TELLER'].includes(user.role) && (
+          {['ADMIN', 'TELLER', 'CUSTOMER'].includes(user.role) && (
             <button 
               className="sidebar-link" 
               style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', marginTop: '0.5rem' }}
@@ -184,18 +184,19 @@ const AppContent = () => {
             <p className="modal-sub">Fill in the details to create a new bank account.</p>
             <form onSubmit={handleCreate}>
               <div className="form-group">
-                <label className="label">Account Owner Name</label>
+                <label className="label">Account Type</label>
                 <div className="input-icon-wrap">
-                  <span className="icon-prefix">{Icon.user}</span>
-                  <input
-                    type="text"
+                  <span className="icon-prefix">{Icon.bank}</span>
+                  <select
                     className="input"
-                    placeholder="Enter full name"
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
                     required
-                    autoFocus
-                  />
+                  >
+                    <option value="" disabled>Select account type</option>
+                    <option value="SAVINGS">Savings Account</option>
+                    <option value="CURRENT">Current Account</option>
+                  </select>
                 </div>
               </div>
               <div className="modal-footer">
