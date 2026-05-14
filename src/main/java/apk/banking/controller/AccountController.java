@@ -76,7 +76,7 @@ public class AccountController {
     }
 
     @PutMapping("/{id}/deposit")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TELLER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TELLER', 'CUSTOMER')")
     public ResponseEntity<Account> deposit(
             @PathVariable Long id,
             @RequestBody DepositRequest request) {
@@ -86,7 +86,7 @@ public class AccountController {
     }
 
     @PutMapping("/{id}/withdraw")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TELLER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TELLER', 'CUSTOMER')")
     public ResponseEntity<Account> withdraw(
             @PathVariable Long id,
             @RequestBody DepositRequest request) {
